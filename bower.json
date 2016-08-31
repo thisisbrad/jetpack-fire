@@ -1,0 +1,23 @@
+{
+  "name": "jetpack-fire",
+  "description": "",
+  "main": "index.js",
+  "authors": [
+    "Brad Beltowski <bbelowski@fullsail.com>"
+  ],
+  "license": "ISC",
+  "homepage": "https://github.com/thisisbrad/jetpack-fire",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "public/bower",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "phaser": "^2.6.2",
+    "angularfire": "^2.0.1",
+    "angular-route": "^1.5.7"
+  }
+}
