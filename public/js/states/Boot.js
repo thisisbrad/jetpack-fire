@@ -4,8 +4,8 @@ JetPackFire.Boot = function() {};
 
 JetPackFire.Boot.prototype =  {
 	preload: function() {
-		this.load.image('logo', 'assests/images/logo.png')
-		this.load.image('preloadbar', 'assests/images/preloader-bar.png')
+		this.load.image('logo', 'assets/images/logo.png')
+		this.load.image('preloadBar', 'assets/images/preloader-bar.png')
 	},
 	create: function() {
     this.game.stage.backgroundColor = '#fff'
