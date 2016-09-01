@@ -4,16 +4,25 @@
 
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
+	<meta name="apple-mobile-web-app-cappable" content="yes">
+	<meta name="viewport" content="minimal-ui">
 	<title>Jetpack Fire</title>
-		<script src="/bower/angular/angular.js"></script>
-		<script src="/bower/angular-route/angular-route.js"></script>
-		<script src="/bower/firebase/firebase.js"></script>
-		<script src="/bower/angularfire/dist/angularfire.js"></script>
-		<script src="/bower/phaser/build/phaser.js"></script>
+	<script src="/bower/angular/angular.js"></script>
+	<script src="/bower/angular-route/angular-route.js"></script>
+	<script src="/bower/firebase/firebase.js"></script>
+	<script src="/bower/angularfire/dist/angularfire.js"></script>
+	<script src="/bower/phaser/build/phaser.js"></script>
 
-  	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
-  	<link href="css/styles.css?v=3.0" rel="stylesheet" type='text/css' media="all">
+	
+	<script src="/js/states/Boot.js"></script>
+	<script src="/js/states/Preload.js"></script>
+	
+	
+	<script src="/js/main.js"></script>
+
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+	<link href="css/styles.css?v=3.0" rel="stylesheet" type='text/css' media="all">
 
 	<!--[if IE]>
   		<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -21,6 +30,6 @@
 </head>
 <body>
     <!-- This is a BOSS HTML5 template! -->
-    <h1>Holla!</h1>
+    <!-- Phaser will load game into body tag -->
 </body>
 </html>
