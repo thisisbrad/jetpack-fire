@@ -59,7 +59,6 @@ JetPackFire.Game.prototype = {
     }
 
     if(this.coinTimer < this.game.time.now){
-    	console.log("Time to make a Coin!")
     	this.createCoin()
     	this.coinTimer = this.game.time.now + this.coinRate
     }
