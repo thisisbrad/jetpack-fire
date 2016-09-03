@@ -59,6 +59,7 @@ JetPackFire.Game.prototype = {
     }
 
     if(this.coinTimer < this.game.time.now){
+    	console.log("Time to make a Coin!")
     	this.createCoin()
     	this.coinTimer = this.game.time.now + this.coinRate
     }
@@ -69,20 +70,25 @@ JetPackFire.Game.prototype = {
     }
 
     this.game.physics.arcade.collide(this.player, this.ground, this.groundHit, null, this);
+    this.game.physics.arcade.overlap(this.player, this.coins, this.coinHit, null, this);
 	},
 	shutdown: function() {
 
 	},
 	createCoin: function() {
+		console.log("Starting Coin! Factory")
 		var x = this.game.width
 		var y = this.game.rnd.integerInRange(50, this.game.world.height - 192)
 
 		var coin = this.coins.getFirstExists(false)
+		console.log('Forging a coin: ', coin)
 		if(!coin){
 			coin = new Coin(this.game, 0, 0)
+			console.log('Pressing a coin: ', coin)
 			this.coins.add(coin)
 			coin.reset(x,y)
 			coin.revive()
+			console.log("MADE A COIN")
 		}
 	},
 	createEnemy: function() {
@@ -99,5 +105,12 @@ JetPackFire.Game.prototype = {
 	},
   groundHit: function(player, ground) {
     player.body.velocity.y = -200;
+  },
+  coinHit: function(player, coin) {
+    this.score++
+    console.log("Got a Coin! ", this.score)
+    coin.kill()
+    this.scoreText.text = 'Score: ' + this.score
+
   }
 }
