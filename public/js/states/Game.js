@@ -1,8 +1,11 @@
 JetPackFire.Game = function() {
 	this.playerMinAngle = -20
 	this.playerMaxAngle = 20
-	this.coinRate = 1000
+	this.coinRate = 1200
 	this.coinTimer = 0
+	this.enemyRate = 2500
+	this.enemyTimer = 0
+	this.score = 0
 }
 
 JetPackFire.Game.prototype = {
@@ -35,8 +38,9 @@ JetPackFire.Game.prototype = {
 		this.player.body.bounce.set(0.25)
 
 		this.coins = this.game.add.group()
+		this.enemies = this.game.add.group()
 
-		this.coins
+		this.scoreText = this.game.add.bitmapText(10,10,'minecraftia', 'Score: 0', 24)
 	},
 	update: function() {
 		this.game.input.activePointer.isDown ? this.player.body.velocity.y -= 24 : this.player.body.velocity.y
@@ -55,8 +59,13 @@ JetPackFire.Game.prototype = {
     }
 
     if(this.coinTimer < this.game.time.now){
-    	this.createCoins()
+    	this.createCoin()
     	this.coinTimer = this.game.time.now + this.coinRate
+    }
+
+    if(this.enemyTimer < this.game.time.now){
+    	this.createEnemy()
+    	this.enemyTimer = this.game.time.now + this.enemyRate
     }
 
     this.game.physics.arcade.collide(this.player, this.ground, this.groundHit, null, this);
@@ -64,7 +73,7 @@ JetPackFire.Game.prototype = {
 	shutdown: function() {
 
 	},
-	createCoins: function() {
+	createCoin: function() {
 		var x = this.game.width
 		var y = this.game.rnd.integerInRange(50, this.game.world.height - 192)
 
@@ -74,7 +83,18 @@ JetPackFire.Game.prototype = {
 			this.coins.add(coin)
 			coin.reset(x,y)
 			coin.revive()
+		}
+	},
+	createEnemy: function() {
+		var x = this.game.width
+		var y = this.game.rnd.integerInRange(50, this.game.world.height - 192)
 
+		var enemy = this.enemies.getFirstExists(false)
+		if(!enemy){
+			enemy = new Enemy(this.game, 0, 0)
+			this.enemies.add(enemy)
+			enemy.reset(x,y)
+			enemy.revive()
 		}
 	},
   groundHit: function(player, ground) {
