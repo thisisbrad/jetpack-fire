@@ -76,20 +76,17 @@ JetPackFire.Game.prototype = {
 
 	},
 	createCoin: function() {
-		console.log("Starting Coin! Factory")
 		var x = this.game.width
 		var y = this.game.rnd.integerInRange(50, this.game.world.height - 192)
 
 		var coin = this.coins.getFirstExists(false)
-		console.log('Forging a coin: ', coin)
-		if(!coin){
+		if(!coin) {
 			coin = new Coin(this.game, 0, 0)
-			console.log('Pressing a coin: ', coin)
 			this.coins.add(coin)
-			coin.reset(x,y)
-			coin.revive()
-			console.log("MADE A COIN")
 		}
+
+		coin.reset(x,y)
+		coin.revive()
 	},
 	createEnemy: function() {
 		var x = this.game.width
