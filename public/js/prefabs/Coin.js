@@ -21,8 +21,8 @@ Coin.prototype = Object.create(Phaser.Sprite.prototype)
 Coin.prototype.constructor = Coin
 
 Coin.prototype.onRevived = function() {
-	this.body.velcity.x = -400
-	this.animation.play('spin', 10, true)
+	this.body.velocity.x = -400
+	this.animations.play('spin', 10, true)
 }
 
 Coin.prototype.onKilled = function() {

@@ -1,9 +1,8 @@
 JetPackFire.Game = function() {
-	this.player.playerMinAngle = -20
-	this.player.playerMaxAngle = 20
+	this.playerMinAngle = -20
+	this.playerMaxAngle = 20
 	this.coinRate = 1000
 	this.coinTimer = 0
-
 }
 
 JetPackFire.Game.prototype = {
@@ -67,9 +66,16 @@ JetPackFire.Game.prototype = {
 	},
 	createCoins: function() {
 		var x = this.game.width
-		var y = this.game.rnd.intgerInRange(50, this.game.world.height - 192)
+		var y = this.game.rnd.integerInRange(50, this.game.world.height - 192)
 
-		var coin = this.coins.getFirstExists
+		var coin = this.coins.getFirstExists(false)
+		if(!coin){
+			coin = new Coin(this.game, 0, 0)
+			this.coins.add(coin)
+			coin.reset(x,y)
+			coin.revive()
+
+		}
 	},
   groundHit: function(player, ground) {
     player.body.velocity.y = -200;
