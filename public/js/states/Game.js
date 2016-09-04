@@ -43,10 +43,21 @@ JetPackFire.Game.prototype = {
 		this.scoreText = this.game.add.bitmapText(10,10,'minecraftia', 'Score: 0', 24)
 
 		this.jetpackSound = this.game.add.audio('rocket')
+		this.coinSound = this.game.add.audio('coin')
+		this.deathSound = this.game.add.audio('death')
+		this.gameMusic = this.game.add.audio('gameMusic')
+		this.gameMusic.play('', 0, true)
 	},
 	update: function() {
-		this.game.input.activePointer.isDown ? this.player.body.velocity.y -= 24 : this.player.body.velocity.y
-		
+		if(this.game.input.activePointer.isDown) {
+			this.player.body.velocity.y -= 24
+			if(!this.jetpackSound.isPlaying) {
+				this.jetpackSound.play('', 0, true, 0.5)
+			}
+		} else {
+			this.jetpackSound.stop()
+		}
+
 		if( this.player.body.velocity.y < 0 || this.game.input.activePointer.isDown) {
       if(this.player.angle > 0) {
         this.player.angle = 0;
@@ -111,14 +122,26 @@ JetPackFire.Game.prototype = {
   },
   coinHit: function(player, coin) {
     this.score++
+    this.coinSound.play()
     console.log("Got a Coin! ", this.score)
     coin.kill()
-    this.scoreText.text = 'Score: ' + this.score
+    var dummyCoin = new Coin(this.game, coin.x, coin.y)
+    this.game.add.existing(dummyCoin)
+    dummyCoin.animations.play('spin', 40, true)
+
+    var scoreTween = this.game.add.tween(dummyCoin).to({x: 50, y:50}, 300, Phaser.Easing.Linear.NONE, true)
+    scoreTween.onComplete.add(function() {
+    	dummyCoin.destroy()
+    	this.scoreText.text = 'Score: ' + this.score
+    }, this)
+    
 
   },
   enemyHit: function(player, enemy) {
     player.kill()
     enemy.kill()
+    this.deathSound.play()
+    this.gameMusic.stop()
     this.ground.stopScroll()
     this.background.stopScroll()
     this.foreground.stopScroll()
