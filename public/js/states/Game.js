@@ -41,6 +41,8 @@ JetPackFire.Game.prototype = {
 		this.enemies = this.game.add.group()
 
 		this.scoreText = this.game.add.bitmapText(10,10,'minecraftia', 'Score: 0', 24)
+
+		this.jetpackSound = this.game.add.audio('rocket')
 	},
 	update: function() {
 		this.game.input.activePointer.isDown ? this.player.body.velocity.y -= 24 : this.player.body.velocity.y
@@ -59,7 +61,6 @@ JetPackFire.Game.prototype = {
     }
 
     if(this.coinTimer < this.game.time.now){
-    	console.log("Time to make a Coin!")
     	this.createCoin()
     	this.coinTimer = this.game.time.now + this.coinRate
     }
@@ -71,9 +72,14 @@ JetPackFire.Game.prototype = {
 
     this.game.physics.arcade.collide(this.player, this.ground, this.groundHit, null, this);
     this.game.physics.arcade.overlap(this.player, this.coins, this.coinHit, null, this);
+    this.game.physics.arcade.overlap(this.player, this.enemies, this.enemyHit, null, this);
 	},
 	shutdown: function() {
-
+		this.coins.destroy()
+		this.enemies.destroy()
+		this.coinTimer = 0
+		this.enemyTimer = 0
+		this.score = 0
 	},
 	createCoin: function() {
 		var x = this.game.width
@@ -109,5 +115,22 @@ JetPackFire.Game.prototype = {
     coin.kill()
     this.scoreText.text = 'Score: ' + this.score
 
+  },
+  enemyHit: function(player, enemy) {
+    player.kill()
+    enemy.kill()
+    this.ground.stopScroll()
+    this.background.stopScroll()
+    this.foreground.stopScroll()
+
+    this.enemies.setAll('body.velocity.x', 0)
+    this.coins.setAll('body.velocity.x', 0)
+
+    this.enemyTimer = Number.MAX_VALUE
+    this.coinTimer = Number.MAX_VALUE
+
+    var scoreboard = new Scoreboard(this.game)
+    scoreboard.show(this.score)
+    //this.shutdown()
   }
 }
