@@ -97,48 +97,48 @@ JetPackFire.Game.prototype = {
 		this.gameMusic.play('', 0, true)
 	},
 	update: function() {
-		if(this.game.input.activePointer.isDown) {
-			this.player.body.velocity.y -= 24
-			if(!this.jetpackSound.isPlaying) {
-				this.jetpackSound.play('', 0, true, 0.5)
-			}
-		} else {
-			this.jetpackSound.stop()
-		}
+    if(this.player.alive) {
+    	// if touch isDown add velocity and sound
+      if(this.game.input.activePointer.isDown) {
+        this.player.body.velocity.y -= 25
+        if(!this.jetpackSound.isPlaying) {
+          this.jetpackSound.play('',0,true, 0.5);
+        }
+        this.player.animations.play('fly', 16);
+      } else {
+        this.jetpackSound.stop();
+      }
 
-		if( this.player.body.velocity.y < 0 || this.game.input.activePointer.isDown) {
-      if(this.player.angle > 0) {
-        this.player.angle = 0;
-      }
-      if(this.player.angle > this.playerMinAngle) {
-        this.player.angle -= 0.5;
-      }
-    } else if(this.player.body.velocity.y >=0 && !this.game.input.activePointer.idDown) {
-      if(this.player.angle < this.playerMaxAngle) {
-        this.player.angle += 0.5;
-      }
+  		if( this.player.body.velocity.y < 0 || this.game.input.activePointer.isDown) {
+	      if(this.player.angle > 0) {
+	        this.player.angle = 0;
+	      }
+	      if(this.player.angle > this.playerMinAngle) {
+	        this.player.angle -= 0.5;
+	      }
+	    } else if(this.player.body.velocity.y >=0 && !this.game.input.activePointer.idDown) {
+	      if(this.player.angle < this.playerMaxAngle) {
+	        this.player.angle += 0.5
+	      }
+	    }
+
+      this.shadow.scale.setTo(this.player.y / this.game.height);
+      this.game.physics.arcade.collide(this.player, this.ground, this.groundHit, null, this);
+      this.game.physics.arcade.overlap(this.player, this.coins, this.coinHit, null, this);
+      this.game.physics.arcade.overlap(this.player, this.enemies, this.enemyHit, null, this);
+
+    } else {
+      this.game.physics.arcade.collide(this.player, this.ground);
     }
-
-    // if(this.coinTimer < this.game.time.now){
-    // 	this.generateCoins()
-    // 	this.coinTimer = this.game.time.now + this.coinRate
-    // }
-
-    // if(this.enemyTimer < this.game.time.now){
-    // 	this.createEnemy()
-    // 	this.enemyTimer = this.game.time.now + this.enemyRate
-    // }
-
-    this.game.physics.arcade.collide(this.player, this.ground, this.groundHit, null, this);
-    this.game.physics.arcade.overlap(this.player, this.coins, this.coinHit, null, this);
-    this.game.physics.arcade.overlap(this.player, this.enemies, this.enemyHit, null, this);
 	},
 	shutdown: function() {
+		console.log('shutting down')
 		this.coins.destroy()
 		this.enemies.destroy()
-		this.coinTimer = 0
-		this.enemyTimer = 0
 		this.score = 0
+		this.scoreboard.destroy()
+    this.coinGenerator.timer.destroy()
+    this.enemyGenerator.timer.destroy()
 	},
 	createCoin: function() {
 		var x = this.game.width
@@ -224,8 +224,10 @@ JetPackFire.Game.prototype = {
 			enemy.revive()
 		}
 	},
-  groundHit: function(player, ground) {
-    player.body.velocity.y = -200;
+  groundHit: function() {
+    this.player.angle = 0;
+    this.player.body.velocity.y = -200;
+    //this.bounceSound.play();
   },
   coinHit: function(player, coin) {
     this.score++
