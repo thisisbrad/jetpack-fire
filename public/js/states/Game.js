@@ -1,19 +1,40 @@
 JetPackFire.Game = function() {
 	this.playerMinAngle = -20
 	this.playerMaxAngle = 20
-	this.coinRate = 1200
-	this.coinTimer = 0
-	this.enemyRate = 2500
-	this.enemyTimer = 0
-	this.score = 0
+	// this.coinRate = 1200
+	// this.coinTimer = 0
+	// this.enemyRate = 2500
+	// this.enemyTimer = 0
+	// this.score = 0
 	this.previousCoinType = null;
 	this.coinSpawnX = null;
   this.coinSpacingX = 10;
   this.coinSpacingY = 10;
+
+    // settings
+  this.playerMaxY = null;
+  // this.playerMaxAngle = 20;
+  // this.playerMinAngle = -20;
+  // this.previousCoinType = null;
+  // this.coinSpacingX = 10;
+  // this.coinSpacingY = 10;
+  this.spawnX = null;
 }
 
 JetPackFire.Game.prototype = {
 	create: function() {
+		// set up the game world bounds
+    this.game.world.bounds = new Phaser.Rectangle(0,0, this.game.width + 300, this.game.height);
+
+    // start the physics system
+    this.game.physics.startSystem(Phaser.Physics.ARCADE);
+    this.game.physics.arcade.gravity.y = 400;
+
+    // initialize settings
+    this.playerMaxY = this.game.height - 176;
+    this.spawnX = this.game.width + 64;
+
+    //setting up backgrounds
 		this.background = this.game.add.tileSprite(0, 0, this.game.width, 512, 'background')
 		this.background.autoScroll(-100,0)
 
@@ -25,30 +46,49 @@ JetPackFire.Game.prototype = {
 		this.ground = this.game.add.tileSprite(0, this.game.height -73, this.game.width, 73, 'ground')
 		this.ground.autoScroll(-400,0)
 
+		//setting up player character
 		this.player= this.add.sprite(200, this.game.height/2, 'player')
 		this.player.anchor.setTo(0.5)
 		this.player.scale.setTo(0.3)
-
 		this.player.animations.add('fly', [0,1,2,3,2,1])
 		this.player.animations.play('fly', 8, true)
+		this.player.alive = true
 
-		this.game.physics.startSystem(Phaser.Physics.ARCADE)
-		this.game.physics.arcade.gravity.y = 400
+		// create shadow for jetpack player
+    this.shadow = this.game.add.sprite(this.player.x, this.game.world.height - 73, 'shadow');
+    this.shadow.anchor.setTo(0.5, 0.5);
 
 		this.game.physics.arcade.enableBody(this.ground)
 		this.ground.body.allowGravity = false // turns off gravity on object
 		this.ground.body.immovable = true // turns off effect of other objects moving ground with physics
 		
-		this.game.physics.arcade.enableBody(this.player);
+		this.game.physics.arcade.enableBody(this.player)
 		this.player.body.collideWorldBounds = true
-		this.player.body.bounce.set(0.25)
+		this.player.body.bounce.set(0.25, 0.25)
 
-		this.coins = this.game.add.group()
+		//in game scoring 
+		this.scoreText = this.game.add.bitmapText(10,10,'minecraftia', 'Score: 0', 24)
+		//create scoreboard
+    this.scoreboard = new Scoreboard(this.game)
+    this.add.existing(this.scoreboard)
+
+    //game item groups
+    this.coins = this.game.add.group()
 		this.enemies = this.game.add.group()
 
-		this.coinSpawnX = this.game.width + 64;
+    //create an enemy spawn loop
+    // this.enemyGenerator = this.game.time.events.loop(
+    // 	Phaser.Timer.SECOND, this.generateEnemy, this
+    // )
+    // this.enemyGenerator.timer.start()
 
-		this.scoreText = this.game.add.bitmapText(10,10,'minecraftia', 'Score: 0', 24)
+    // create a coin spawn loop
+    this.coinGenerator = this.game.time.events.loop(
+    	Phaser.Timer.SECOND, this.generateCoins, this
+    )
+    this.coinGenerator.timer.start()
+
+		this.coinSpawnX = this.game.width + 64	
 
 		this.jetpackSound = this.game.add.audio('rocket')
 		this.coinSound = this.game.add.audio('coin')
@@ -79,15 +119,15 @@ JetPackFire.Game.prototype = {
       }
     }
 
-    if(this.coinTimer < this.game.time.now){
-    	this.generateCoins()
-    	this.coinTimer = this.game.time.now + this.coinRate
-    }
+    // if(this.coinTimer < this.game.time.now){
+    // 	this.generateCoins()
+    // 	this.coinTimer = this.game.time.now + this.coinRate
+    // }
 
-    if(this.enemyTimer < this.game.time.now){
-    	this.createEnemy()
-    	this.enemyTimer = this.game.time.now + this.enemyRate
-    }
+    // if(this.enemyTimer < this.game.time.now){
+    // 	this.createEnemy()
+    // 	this.enemyTimer = this.game.time.now + this.enemyRate
+    // }
 
     this.game.physics.arcade.collide(this.player, this.ground, this.groundHit, null, this);
     this.game.physics.arcade.overlap(this.player, this.coins, this.coinHit, null, this);
@@ -207,7 +247,6 @@ JetPackFire.Game.prototype = {
 
   },
   enemyHit: function(player, enemy) {
-    //player.kill()
     enemy.kill()
     this.deathSound.play()
     this.gameMusic.stop()
@@ -218,13 +257,16 @@ JetPackFire.Game.prototype = {
     this.enemies.setAll('body.velocity.x', 0)
     this.coins.setAll('body.velocity.x', 0)
 
-    this.enemyTimer = Number.MAX_VALUE
-    this.coinTimer = Number.MAX_VALUE
+    // this.enemyTimer = Number.MAX_VALUE
+    // this.coinTimer = Number.MAX_VALUE
 
     var deathTween = this.game.add.tween(this.player).to({angle:180}, 2000, Phaser.Easing.Bounce.Out, true);
-    //deathTween.onComplete.add(this.showScoreboard, this);
+    deathTween.onComplete.add(this.showScoreboard, this);
 
     // var scoreboard = new Scoreboard(this.game)
     // scoreboard.show(this.score)
+  },
+  showScoreboard: function() {
+    this.scoreboard.show(this.score)
   }
 }
