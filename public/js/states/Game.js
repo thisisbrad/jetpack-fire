@@ -1,38 +1,27 @@
 JetPackFire.Game = function() {
 	this.playerMinAngle = -20
 	this.playerMaxAngle = 20
-	// this.coinRate = 1200
-	// this.coinTimer = 0
-	// this.enemyRate = 2500
-	// this.enemyTimer = 0
-	// this.score = 0
-	this.previousCoinType = null;
-	this.coinSpawnX = null;
-  this.coinSpacingX = 10;
-  this.coinSpacingY = 10;
-
-    // settings
-  this.playerMaxY = null;
-  // this.playerMaxAngle = 20;
-  // this.playerMinAngle = -20;
-  // this.previousCoinType = null;
-  // this.coinSpacingX = 10;
-  // this.coinSpacingY = 10;
-  this.spawnX = null;
+	this.score = 0
+	this.previousCoinType = null
+	this.coinSpawnX = null
+  this.coinSpacingX = 10
+  this.coinSpacingY = 10
+  this.playerMaxY = null
+  this.spawnX = null
 }
 
 JetPackFire.Game.prototype = {
 	create: function() {
 		// set up the game world bounds
-    this.game.world.bounds = new Phaser.Rectangle(0,0, this.game.width + 300, this.game.height);
+    this.game.world.bounds = new Phaser.Rectangle(0,0, this.game.width + 300, this.game.height)
 
     // start the physics system
-    this.game.physics.startSystem(Phaser.Physics.ARCADE);
-    this.game.physics.arcade.gravity.y = 400;
+    this.game.physics.startSystem(Phaser.Physics.ARCADE)
+    this.game.physics.arcade.gravity.y = 400
 
     // initialize settings
-    this.playerMaxY = this.game.height - 176;
-    this.spawnX = this.game.width + 64;
+    this.playerMaxY = this.game.height - 176
+    this.spawnX = this.game.width + 64
 
     //setting up backgrounds
 		this.background = this.game.add.tileSprite(0, 0, this.game.width, 512, 'background')
@@ -56,7 +45,7 @@ JetPackFire.Game.prototype = {
 
 		// create shadow for jetpack player
     this.shadow = this.game.add.sprite(this.player.x, this.game.world.height - 73, 'shadow');
-    this.shadow.anchor.setTo(0.5, 0.5);
+    this.shadow.anchor.setTo(0.5, 0.5)
 
 		this.game.physics.arcade.enableBody(this.ground)
 		this.ground.body.allowGravity = false // turns off gravity on object
@@ -68,19 +57,16 @@ JetPackFire.Game.prototype = {
 
 		//in game scoring 
 		this.scoreText = this.game.add.bitmapText(10,10,'minecraftia', 'Score: 0', 24)
-		//create scoreboard
-    this.scoreboard = new Scoreboard(this.game)
-    this.add.existing(this.scoreboard)
-
+		
     //game item groups
     this.coins = this.game.add.group()
 		this.enemies = this.game.add.group()
 
     //create an enemy spawn loop
-    // this.enemyGenerator = this.game.time.events.loop(
-    // 	Phaser.Timer.SECOND, this.generateEnemy, this
-    // )
-    // this.enemyGenerator.timer.start()
+    this.enemyGenerator = this.game.time.events.loop(
+    	Phaser.Timer.SECOND + 200, this.generateEnemy, this
+    )
+    this.enemyGenerator.timer.start()
 
     // create a coin spawn loop
     this.coinGenerator = this.game.time.events.loop(
@@ -89,6 +75,10 @@ JetPackFire.Game.prototype = {
     this.coinGenerator.timer.start()
 
 		this.coinSpawnX = this.game.width + 64	
+
+		//create scoreboard
+    this.scoreboard = new Scoreboard(this.game)
+    this.add.existing(this.scoreboard)
 
 		this.jetpackSound = this.game.add.audio('rocket')
 		this.coinSound = this.game.add.audio('coin')
@@ -212,18 +202,19 @@ JetPackFire.Game.prototype = {
       } 
     }
   },
-	createEnemy: function() {
-		var x = this.game.width
-		var y = this.game.rnd.integerInRange(50, this.game.world.height - 192)
+  generateEnemy: function() {
+    var enemy = this.enemies.getFirstExists(false);
+    var x = this.spawnX;
+    var y = this.game.rnd.integerInRange(50, this.game.world.height - 192);
+    
+    if(!enemy) {
+      enemy = new Enemy(this.game, 0, 0, 'missile');
+      this.enemies.add(enemy);
+    }
 
-		var enemy = this.enemies.getFirstExists(false)
-		if(!enemy){
-			enemy = new Enemy(this.game, 0, 0)
-			this.enemies.add(enemy)
-			enemy.reset(x,y)
-			enemy.revive()
-		}
-	},
+    enemy.reset(x, y);
+    enemy.revive();
+  },
   groundHit: function() {
     this.player.angle = 0;
     this.player.body.velocity.y = -200;
@@ -249,24 +240,25 @@ JetPackFire.Game.prototype = {
 
   },
   enemyHit: function(player, enemy) {
-    enemy.kill()
+  	this.player.alive = false;
+  	this.player.animations.stop();
+    this.shadow.destroy();
     this.deathSound.play()
     this.gameMusic.stop()
+    enemy.kill()
+
     this.ground.stopScroll()
     this.background.stopScroll()
     this.foreground.stopScroll()
 
     this.enemies.setAll('body.velocity.x', 0)
     this.coins.setAll('body.velocity.x', 0)
-
-    // this.enemyTimer = Number.MAX_VALUE
-    // this.coinTimer = Number.MAX_VALUE
+    
+    this.enemyGenerator.timer.stop()
+    this.coinGenerator.timer.stop()
 
     var deathTween = this.game.add.tween(this.player).to({angle:180}, 2000, Phaser.Easing.Bounce.Out, true);
-    deathTween.onComplete.add(this.showScoreboard, this);
-
-    // var scoreboard = new Scoreboard(this.game)
-    // scoreboard.show(this.score)
+    deathTween.onComplete.add(this.showScoreboard, this)
   },
   showScoreboard: function() {
     this.scoreboard.show(this.score)
