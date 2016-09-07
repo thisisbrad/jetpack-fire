@@ -6,6 +6,10 @@ JetPackFire.Game = function() {
 	this.enemyRate = 2500
 	this.enemyTimer = 0
 	this.score = 0
+	this.previousCoinType = null;
+	this.coinSpawnX = null;
+  this.coinSpacingX = 10;
+  this.coinSpacingY = 10;
 }
 
 JetPackFire.Game.prototype = {
@@ -13,7 +17,9 @@ JetPackFire.Game.prototype = {
 		this.background = this.game.add.tileSprite(0, 0, this.game.width, 512, 'background')
 		this.background.autoScroll(-100,0)
 
-		this.foreground = this.game.add.tileSprite(0, 470, this.game.width, this.game.height - 533, 'foreground')
+		this.foreground = this.game.add.tileSprite(
+			0, 470, this.game.width, this.game.height - 533, 'foreground'
+		)
 		this.foreground.autoScroll(-100,0)
 
 		this.ground = this.game.add.tileSprite(0, this.game.height -73, this.game.width, 73, 'ground')
@@ -39,6 +45,8 @@ JetPackFire.Game.prototype = {
 
 		this.coins = this.game.add.group()
 		this.enemies = this.game.add.group()
+
+		this.coinSpawnX = this.game.width + 64;
 
 		this.scoreText = this.game.add.bitmapText(10,10,'minecraftia', 'Score: 0', 24)
 
@@ -72,7 +80,7 @@ JetPackFire.Game.prototype = {
     }
 
     if(this.coinTimer < this.game.time.now){
-    	this.createCoin()
+    	this.generateCoins()
     	this.coinTimer = this.game.time.now + this.coinRate
     }
 
@@ -104,7 +112,66 @@ JetPackFire.Game.prototype = {
 
 		coin.reset(x,y)
 		coin.revive()
+
+		return coin
 	},
+  generateCoins: function() {
+	  if(!this.previousCoinType || this.previousCoinType < 3) {
+	    var coinType = this.game.rnd.integer() % 5;
+	    switch(coinType) {
+	      case 0:
+	        //do nothing. No coins generated
+	        break;
+	      case 1:
+	      case 2:
+	        // if the cointype is 1 or 2, create a single coin
+	        //this.createCoin();
+	        this.createCoin();
+
+	        break;
+	      case 3:
+	        // create a small group of coins
+	        this.createCoinGroup(2, 2);
+	        break;
+	      case 4:
+	        //create a large coin group
+	        this.createCoinGroup(6, 2);
+	        break;
+	      default:
+	        // if somehow we error on the cointype, set the previouscointype to zero and do nothing
+	        this.previousCoinType = 0;
+	        break;
+	    }
+
+	    this.previousCoinType = coinType;
+	  } else {
+	    if(this.previousCoinType === 4) {
+	      // the previous coin generated was a large group, 
+	      // skip the next generation as well
+	      this.previousCoinType = 3;
+	    } else {
+	      this.previousCoinType = 0;  
+	    }
+	    
+	  }
+	},
+	createCoinGroup: function(columns, rows) {
+    //create 4 coins in a group
+    var coinSpawnY = this.game.rnd.integerInRange(50, this.game.world.height - 192);
+    var coinRowCounter = 0;
+    var coinColumnCounter = 0;
+    var coin;
+    for(var i = 0; i < columns * rows; i++) {
+      coin = this.createCoin(this.spawnX, coinSpawnY);
+      coin.x = coin.x + (coinColumnCounter * coin.width) + (coinColumnCounter * this.coinSpacingX);
+      coin.y = coinSpawnY + (coinRowCounter * coin.height) + (coinRowCounter * this.coinSpacingY);
+      coinColumnCounter++;
+      if(i+1 >= columns && (i+1) % columns === 0) {
+        coinRowCounter++;
+        coinColumnCounter = 0;
+      } 
+    }
+  },
 	createEnemy: function() {
 		var x = this.game.width
 		var y = this.game.rnd.integerInRange(50, this.game.world.height - 192)
@@ -129,7 +196,9 @@ JetPackFire.Game.prototype = {
     this.game.add.existing(dummyCoin)
     dummyCoin.animations.play('spin', 40, true)
 
-    var scoreTween = this.game.add.tween(dummyCoin).to({x: 50, y:50}, 300, Phaser.Easing.Linear.NONE, true)
+    var scoreTween = this.game.add.tween(dummyCoin).to(
+    	{x: 50, y:50}, 300, Phaser.Easing.Linear.NONE, true
+    )
     scoreTween.onComplete.add(function() {
     	dummyCoin.destroy()
     	this.scoreText.text = 'Score: ' + this.score
@@ -138,7 +207,7 @@ JetPackFire.Game.prototype = {
 
   },
   enemyHit: function(player, enemy) {
-    player.kill()
+    //player.kill()
     enemy.kill()
     this.deathSound.play()
     this.gameMusic.stop()
@@ -152,8 +221,10 @@ JetPackFire.Game.prototype = {
     this.enemyTimer = Number.MAX_VALUE
     this.coinTimer = Number.MAX_VALUE
 
-    var scoreboard = new Scoreboard(this.game)
-    scoreboard.show(this.score)
-    //this.shutdown()
+    var deathTween = this.game.add.tween(this.player).to({angle:180}, 2000, Phaser.Easing.Bounce.Out, true);
+    //deathTween.onComplete.add(this.showScoreboard, this);
+
+    // var scoreboard = new Scoreboard(this.game)
+    // scoreboard.show(this.score)
   }
 }
