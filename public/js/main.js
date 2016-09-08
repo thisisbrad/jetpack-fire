@@ -1,4 +1,4 @@
-var game = new Phaser.Game(window.innerWidth,window.innerHeight, Phaser.AUTO, '')
+var game = new Phaser.Game(window.innerWidth,window.innerHeight-70, Phaser.AUTO, 'jetpackFire')
 
 game.state.add('Boot', JetPackFire.Boot)
 game.state.add('Preloader', JetPackFire.Preload)

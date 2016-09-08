@@ -14,6 +14,7 @@ JetPackFire.Game.prototype = {
 	create: function() {
 		// set up the game world bounds
     this.game.world.bounds = new Phaser.Rectangle(0,0, this.game.width + 300, this.game.height)
+    this.game.time.advancedTiming = true
 
     // start the physics system
     this.game.physics.startSystem(Phaser.Physics.ARCADE)
@@ -87,6 +88,8 @@ JetPackFire.Game.prototype = {
 		this.gameMusic.play('', 0, true)
 	},
 	update: function() {
+		this.game.debug.text(game.time.fps, 32, 100, "#00ff00")
+		// this.game.debug.spriteCoords(this.player, 32, 128)
     if(this.player.alive) {
     	// if touch isDown add velocity and sound
       if(this.game.input.activePointer.isDown) {
@@ -98,7 +101,7 @@ JetPackFire.Game.prototype = {
       } else {
         this.jetpackSound.stop();
       }
-      
+
   		if( this.player.body.velocity.y < 0 || this.game.input.activePointer.isDown) {
 	      if(this.player.angle > 0) {
 	        this.player.angle = 0;
