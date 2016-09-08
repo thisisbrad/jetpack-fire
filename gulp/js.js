@@ -7,6 +7,9 @@ gulp.task('js:build', function () {
 	.pipe(ngAnnotate())
 	.pipe(gulp.dest('./public/js'))
 
+	gulp.src(['./phaser/js/**/*.js'])
+	.pipe(gulp.dest('./public/js'))
+
 	var target = gulp.src('./public/index.html')
 
 	var sources = gulp.src(['./public/js/module.js', './public/js/**/*.js'], {read: false})
