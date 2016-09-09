@@ -88,7 +88,7 @@ JetPackFire.Game.prototype = {
 		this.gameMusic.play('', 0, true)
 	},
 	update: function() {
-		this.game.debug.text(game.time.fps, 32, 100, "#00ff00")
+		this.game.debug.text(this.game.time.fps, 32, 100, "#00ff00")
 		// this.game.debug.spriteCoords(this.player, 32, 128)
     if(this.player.alive) {
     	// if touch isDown add velocity and sound

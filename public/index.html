@@ -28,6 +28,22 @@
 	
 	<script src="/js/main.js"></script>
 
+	<!-- inject:js -->
+	<script src="/js/main.js"></script>
+	<script src="/js/prefabs/Coin.js"></script>
+	<script src="/js/prefabs/Enemy.js"></script>
+	<script src="/js/prefabs/Scoreboard.js"></script>
+	<script src="/js/states/Boot.js"></script>
+	<script src="/js/states/Game.js"></script>
+	<script src="/js/states/MainMenu.js"></script>
+	<script src="/js/states/Preload.js"></script>
+	<!-- endinject -->
+
+	<script>
+		var maker = new PhaserGameConstructor()
+		maker.init()
+	</script>
+
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
 	<link href="css/styles.css?v=3.0" rel="stylesheet" type='text/css' media="all">
 
