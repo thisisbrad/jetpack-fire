@@ -90,16 +90,17 @@ JetPackFire.Game.prototype = {
 	update: function() {
 		this.game.debug.text(this.game.time.fps, 32, 100, "#00ff00")
 		// this.game.debug.spriteCoords(this.player, 32, 128)
+    //console.log('Current Status ', this.player.alive)
     if(this.player.alive) {
     	// if touch isDown add velocity and sound
       if(this.game.input.activePointer.isDown) {
         this.player.body.velocity.y -= 25
         if(!this.jetpackSound.isPlaying) {
-          this.jetpackSound.play('',0,true, 0.5);
+          this.jetpackSound.play('',0,true, 0.5)
         }
-        this.player.animations.play('fly', 16);
+        this.player.animations.play('fly', 16)
       } else {
-        this.jetpackSound.stop();
+        this.jetpackSound.stop()
       }
 
   		if( this.player.body.velocity.y < 0 || this.game.input.activePointer.isDown) {
@@ -129,7 +130,7 @@ JetPackFire.Game.prototype = {
 		this.coins.destroy()
 		this.enemies.destroy()
 		this.score = 0
-		this.scoreboard.destroy()
+    this.scoreboard.destroy()
     this.coinGenerator.timer.destroy()
     this.enemyGenerator.timer.destroy()
 	},
@@ -160,7 +161,6 @@ JetPackFire.Game.prototype = {
 	        // if the cointype is 1 or 2, create a single coin
 	        //this.createCoin();
 	        this.createCoin();
-
 	        break;
 	      case 3:
 	        // create a small group of coins
@@ -242,10 +242,15 @@ JetPackFire.Game.prototype = {
   enemyHit: function(player, enemy) {
   	this.player.alive = false
   	this.player.animations.stop()
-    this.shadow.destroy();
+    this.shadow.destroy()
     this.deathSound.play()
+    
     this.gameMusic.stop()
     enemy.kill()
+
+    if(this.jetpackSound.isPlaying) {
+      this.jetpackSound.stop()
+    }
 
     this.ground.stopScroll()
     this.background.stopScroll()

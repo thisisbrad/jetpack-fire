@@ -1,6 +1,5 @@
 angular.module('fireApp')
 .run(function($rootScope, $location) {
-	console.log("Here 1")
   $rootScope.$on("$routeChangeError", function(event, next, previous, error) {
     if (error === "AUTH_REQUIRED") {
       $location.path("/")
@@ -8,7 +7,6 @@ angular.module('fireApp')
   })
 })
 .config(function($locationProvider, $routeProvider) {
-	console.log("Here 1")
 	$locationProvider.html5Mode(true)
 	$routeProvider
 	.when('/', {
@@ -22,6 +20,24 @@ angular.module('fireApp')
 	.when('/dashboard', {
 		templateUrl: '/views/dashboard.html',
 		controller: 'DashCtrl',
+		resolve: {
+	      "currentAuth": ["Auth", function(Auth) {
+	        return Auth.$requireSignIn();
+	      }]
+	    }
+	})
+	.when('/game-menu', {
+		templateUrl: '/views/game-menus.html',
+		controller: 'GameMenuCtrl',
+		resolve: {
+	      "currentAuth": ["Auth", function(Auth) {
+	        return Auth.$requireSignIn();
+	      }]
+	    }
+	})
+	.when('/game/:gameId', {
+		templateUrl: '/views/game-view.html',
+		controller: 'GameCtrl',
 		resolve: {
 	      "currentAuth": ["Auth", function(Auth) {
 	        return Auth.$requireSignIn();

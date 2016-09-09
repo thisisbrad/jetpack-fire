@@ -1,7 +1,7 @@
 function PhaserGameConstructor() {
 	this.init = function() {
 		var game = new Phaser.Game(
-			window.innerWidth,window.innerHeight-70, Phaser.AUTO, 'jetpackFire'
+			window.innerWidth,window.innerHeight - 54, Phaser.AUTO, 'jetpackFire'
 		)
 
 		game.state.add('Boot', JetPackFire.Boot)
@@ -10,6 +10,8 @@ function PhaserGameConstructor() {
 		game.state.add('Game', JetPackFire.Game)
 
 		game.state.start('Boot')
+
+		return game;
 	}
 	this.log = function() {
 		console.log('WOOOT WOOOOT!!')

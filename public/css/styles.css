@@ -6,6 +6,10 @@
 	background-color: #e74c3c;
 }
 
+.navbar {
+	margin-bottom: 0;
+}
+
 label {
 	display: block;
 }
