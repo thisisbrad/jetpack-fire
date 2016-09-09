@@ -1,4 +1,18 @@
+.edit-post {
+	background-color: #3498db;
+}
+
+.remove-post {
+	background-color: #e74c3c;
+}
+
+label {
+	display: block;
+}
+
 body {
 	padding: 0px;
 	margin: 0px;
+	background-image : url("../assets/images/geometry.png");
+	background-repeat: repeat;
 }

@@ -1,3 +1,6 @@
 {
-	"directory" : "public/bower"
+	"directory" : "public/bower",
+	"scripts": {
+        "postinstall": "rm -rf ./public/bower/bootswatch-dist/js/ ./public/bower/jquery"
+    }
 }

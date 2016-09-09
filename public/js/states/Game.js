@@ -150,7 +150,7 @@ JetPackFire.Game.prototype = {
 	},
   generateCoins: function() {
 	  if(!this.previousCoinType || this.previousCoinType < 3) {
-	    var coinType = this.game.rnd.integer() % 5;
+	    var coinType = this.game.rnd.integer() % 5
 	    switch(coinType) {
 	      case 0:
 	        //do nothing. No coins generated
@@ -164,54 +164,54 @@ JetPackFire.Game.prototype = {
 	        break;
 	      case 3:
 	        // create a small group of coins
-	        this.createCoinGroup(2, 2);
+	        this.createCoinGroup(2, 2)
 	        break;
 	      case 4:
 	        //create a large coin group
-	        this.createCoinGroup(6, 2);
+	        this.createCoinGroup(6, 2)
 	        break;
 	      default:
 	        // if somehow we error on the cointype, set the previouscointype to zero and do nothing
-	        this.previousCoinType = 0;
+	        this.previousCoinType = 0
 	        break;
 	    }
 
-	    this.previousCoinType = coinType;
+	    this.previousCoinType = coinType
 	  } else {
 	    if(this.previousCoinType === 4) {
 	      // the previous coin generated was a large group, 
 	      // skip the next generation as well
-	      this.previousCoinType = 3;
+	      this.previousCoinType = 3
 	    } else {
-	      this.previousCoinType = 0;  
+	      this.previousCoinType = 0
 	    }
 	    
 	  }
 	},
 	createCoinGroup: function(columns, rows) {
     //create 4 coins in a group
-    var coinSpawnY = this.game.rnd.integerInRange(50, this.game.world.height - 192);
-    var coinRowCounter = 0;
-    var coinColumnCounter = 0;
+    var coinSpawnY = this.game.rnd.integerInRange(50, this.game.world.height - 192)
+    var coinRowCounter = 0
+    var coinColumnCounter = 0
     var coin;
     for(var i = 0; i < columns * rows; i++) {
-      coin = this.createCoin(this.spawnX, coinSpawnY);
+      coin = this.createCoin(this.spawnX, coinSpawnY)
       coin.x = coin.x + (coinColumnCounter * coin.width) + (coinColumnCounter * this.coinSpacingX);
       coin.y = coinSpawnY + (coinRowCounter * coin.height) + (coinRowCounter * this.coinSpacingY);
-      coinColumnCounter++;
+      coinColumnCounter++
       if(i+1 >= columns && (i+1) % columns === 0) {
-        coinRowCounter++;
-        coinColumnCounter = 0;
+        coinRowCounter++
+        coinColumnCounter = 0
       } 
     }
   },
   generateEnemy: function() {
-    var enemy = this.enemies.getFirstExists(false);
-    var x = this.spawnX;
-    var y = this.game.rnd.integerInRange(50, this.game.world.height - 192);
+    var enemy = this.enemies.getFirstExists(false)
+    var x = this.spawnX
+    var y = this.game.rnd.integerInRange(50, this.game.world.height - 192)
     
     if(!enemy) {
-      enemy = new Enemy(this.game, 0, 0, 'missile');
+      enemy = new Enemy(this.game, 0, 0, 'missile')
       this.enemies.add(enemy);
     }
 
@@ -220,8 +220,7 @@ JetPackFire.Game.prototype = {
   },
   groundHit: function() {
     this.player.angle = 0;
-    this.player.body.velocity.y = -200;
-    //this.bounceSound.play();
+    this.player.body.velocity.y = -200
   },
   coinHit: function(player, coin) {
     this.score++
@@ -239,12 +238,10 @@ JetPackFire.Game.prototype = {
     	dummyCoin.destroy()
     	this.scoreText.text = 'Score: ' + this.score
     }, this)
-    
-
   },
   enemyHit: function(player, enemy) {
-  	this.player.alive = false;
-  	this.player.animations.stop();
+  	this.player.alive = false
+  	this.player.animations.stop()
     this.shadow.destroy();
     this.deathSound.play()
     this.gameMusic.stop()

@@ -14,5 +14,4 @@ function PhaserGameConstructor() {
 	this.log = function() {
 		console.log('WOOOT WOOOOT!!')
 	}
-
 }

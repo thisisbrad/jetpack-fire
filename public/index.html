@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" ng-app="fireApp">
 
 <head>
+	<base href="/" />
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
 	<meta name="apple-mobile-web-app-cappable" content="yes">
@@ -14,37 +15,30 @@
 	<script src="/bower/angularfire/dist/angularfire.js"></script>
 	<script src="/bower/phaser/build/phaser.js"></script>
 
-	<!-- Game States -->
-	<script src="/js/states/Boot.js"></script>
-	<script src="/js/states/Preload.js"></script>
-	<script src="/js/states/MainMenu.js"></script>
-	<script src="/js/states/Game.js"></script>
-	
-	<!-- Game Prefabs -->
-	<script src="/js/prefabs/Coin.js"></script>
-	<script src="/js/prefabs/Enemy.js"></script>
-	<script src="/js/prefabs/Scoreboard.js"></script>
-
-	
-	<script src="/js/main.js"></script>
-
 	<!-- inject:js -->
+	<script src="/js/module.js"></script>
 	<script src="/js/main.js"></script>
+	<script src="/js/routes.js"></script>
+	<script src="/js/controllers/AuthCtrl.js"></script>
+	<script src="/js/controllers/DashCtrl.js"></script>
+	<script src="/js/controllers/HomeCtrl.js"></script>
 	<script src="/js/prefabs/Coin.js"></script>
 	<script src="/js/prefabs/Enemy.js"></script>
 	<script src="/js/prefabs/Scoreboard.js"></script>
+	<script src="/js/services/AuthSvc.js"></script>
 	<script src="/js/states/Boot.js"></script>
 	<script src="/js/states/Game.js"></script>
 	<script src="/js/states/MainMenu.js"></script>
 	<script src="/js/states/Preload.js"></script>
 	<!-- endinject -->
 
-	<script>
-		var maker = new PhaserGameConstructor()
-		maker.init()
-	</script>
+<!-- 	<script>
+		// var maker = new PhaserGameConstructor()
+		// maker.init()
+	</script> -->
 
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+	<link rel="stylesheet" href="bower/bootswatch-dist/css/bootstrap.css">
 	<link href="css/styles.css?v=3.0" rel="stylesheet" type='text/css' media="all">
 
 	<!--[if IE]>
@@ -54,7 +48,8 @@
 <body>
     <!-- This is a BOSS HTML5 template! -->
     <!-- Phaser will load game into body tag -->
-    <h1>hey</h1>
+    <div ng-controller="AuthCtrl" ng-include="'views/nav.html'"></div>
+    <ng-view></ng-view>
     
 </body>
 </html>
