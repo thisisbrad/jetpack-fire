@@ -6,10 +6,10 @@ angular.module('fireApp')
 	Auth.$onAuthStateChanged(function(user) {
 		if(user) {
 			$rootScope.currentUser = user
-			console.log('in here ', user)
+			console.log('AuthCtrl: in here ', user)
 		} else {
 			$rootScope.currentUser = null
-			console.log('outta here')
+			console.log('AuthCtrl: outta here')
 		}
 	})
 

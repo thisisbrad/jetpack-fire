@@ -1,17 +1,26 @@
-angular.module('fireApp').factory("GameSvc", function($rootScope) {
-  this.playerMinAngle = -20
-  this.playerMaxAngle = 20
-  this.score = 0
-  this.previousCoinType = null
-  this.coinSpawnX = null
-  this.coinSpacingX = 10
-  this.coinSpacingY = 10
-  this.playerMaxY = null
-  this.spawnX = null
-  $rootScope.score = 0
-
+angular.module('fireApp').factory("GameSvc", function($rootScope, $firebaseObject) {
   return { 
     create: function() {
+      var ref = firebase.database().ref()
+      var postRef = ref.child('users/' + $rootScope.currentUser.uid + "/game-collection/43243243242/gamedata" )
+      var collection = $firebaseObject(postRef)
+      this.collection = collection
+      this.playerMinAngle = -20
+      this.playerMaxAngle = 20
+      this.score = 0
+      this.collection.score = 0
+      this.collection.player = {}
+      this.collection.player.y = 0
+      this.previousCoinType = null
+      this.coinSpawnX = null
+      this.coinSpacingX = 10
+      this.coinSpacingY = 10
+      this.playerMaxY = null
+      this.spawnX = null
+
+      console.log("Current Player ", $rootScope.currentUser)
+      console.log("Current Collection ", collection)
+
       // set up the game world bounds
       this.game.world.bounds = new Phaser.Rectangle(0,0, this.game.width + 300, this.game.height)
       this.game.time.advancedTiming = true
@@ -64,10 +73,10 @@ angular.module('fireApp').factory("GameSvc", function($rootScope) {
       this.enemies = this.game.add.group()
 
       //create an enemy spawn loop
-      // this.enemyGenerator = this.game.time.events.loop(
-      //   Phaser.Timer.SECOND + 200, this.generateEnemy, this
-      // )
-      // this.enemyGenerator.timer.start()
+      this.enemyGenerator = this.game.time.events.loop(
+        Phaser.Timer.SECOND + 200, this.generateEnemy, this
+      )
+      this.enemyGenerator.timer.start()
 
       // create a coin spawn loop
       this.coinGenerator = this.game.time.events.loop(
@@ -90,7 +99,6 @@ angular.module('fireApp').factory("GameSvc", function($rootScope) {
     update: function() {
       this.game.debug.text(this.game.time.fps, 32, 100, "#00ff00")
       // this.game.debug.spriteCoords(this.player, 32, 128)
-      //console.log('Current Status ', this.player.alive)
       if(this.player.alive) {
         // if touch isDown add velocity and sound
         if(this.game.input.activePointer.isDown) {
@@ -116,6 +124,14 @@ angular.module('fireApp').factory("GameSvc", function($rootScope) {
           }
         }
 
+        this.collection.player.y = this.player.y
+        this.collection.$save()
+        // .then(function(ref) {
+        //   // console.log('Moving ', ref)
+        // }, function(error) {
+        //   console.log("Error:", error);
+        // })
+
         this.shadow.scale.setTo(this.player.y / this.game.height);
         this.game.physics.arcade.collide(this.player, this.ground, this.groundHit, null, this);
         this.game.physics.arcade.overlap(this.player, this.coins, this.coinHit, null, this);
@@ -130,7 +146,6 @@ angular.module('fireApp').factory("GameSvc", function($rootScope) {
       this.coins.destroy()
       this.enemies.destroy()
       this.score = 0
-      $rootScope.score = 0
       this.scoreboard.destroy()
       this.coinGenerator.timer.destroy()
       this.enemyGenerator.timer.destroy()
@@ -225,9 +240,13 @@ angular.module('fireApp').factory("GameSvc", function($rootScope) {
     },
     coinHit: function(player, coin) {
       this.score++
-      $rootScope.score++
       this.coinSound.play()
-      // console.log("Got a Coin! ", this.score)
+      this.collection.score = this.score
+      this.collection.$save().then(function(ref) {
+        //console.log('Got a Coin!', this.collection.score)
+      }, function(error) {
+        console.log("Error:", error);
+      });
       coin.kill()
       var dummyCoin = new Coin(this.game, coin.x, coin.y)
       this.game.add.existing(dummyCoin)
