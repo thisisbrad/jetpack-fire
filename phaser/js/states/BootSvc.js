@@ -19,7 +19,7 @@ angular.module('fireApp').factory("BootSvc", function() {
         this.scale.maxHeight = 1536
         this.scale.forceLandscape = true
         this.scale.pageAlignHorizontally = true
-        this.scale.setScreenSize(true)
+        //this.scale.setScreenSize(true)
       }
       this.state.start('Preloader')
     }
