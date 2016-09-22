@@ -1,7 +1,7 @@
 angular.module('fireApp').service("PhaserSvc", function(BootSvc, GameSvc) {
 	this.init = function() {
 		var game = new Phaser.Game(
-			window.innerWidth,window.innerHeight - 54, Phaser.AUTO, 'jetpackFire'
+			window.innerWidth,window.innerHeight - 54, Phaser.CANVS, 'jetpackFire'
 		)
 
 		console.log("THIS IS RUNNING")
