@@ -15,8 +15,8 @@ JetPackFire.Boot.prototype =  {
       this.scale.pageAlignHorizontally = true
     } else {
       this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL
-      this.scale.minWidth = 568
-      this.scale.minHeight = 600
+      this.scale.minWidth = 268
+      this.scale.minHeight = 200
       this.scale.maxWidth = 2048
       this.scale.maxHeight = 1536
       this.scale.forceLandscape = true
