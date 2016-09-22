@@ -8,6 +8,7 @@ angular.module('fireApp').factory("BootSvc", function() {
     create: function() {
       this.game.stage.backgroundColor = '#fff'
       this.input.maxPointers = 1
+      console.log("Using this version")
 
       if (this.game.device.desktop) {
         this.scale.pageAlignHorizontally = true
