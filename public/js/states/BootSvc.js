@@ -8,10 +8,12 @@ angular.module('fireApp').factory("BootSvc", function() {
     create: function() {
       this.game.stage.backgroundColor = '#fff'
       this.input.maxPointers = 1
+      console.log("Using this version", this.scale)
 
       if (this.game.device.desktop) {
         this.scale.pageAlignHorizontally = true
       } else {
+        console.log("SCALE: ", this.scale)
         this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL
         this.scale.minWidth = 568
         this.scale.minHeight = 600
@@ -19,7 +21,7 @@ angular.module('fireApp').factory("BootSvc", function() {
         this.scale.maxHeight = 1536
         this.scale.forceLandscape = true
         this.scale.pageAlignHorizontally = true
-        this.scale.setScreenSize(true)
+        this.scale.updateLayout(true)
       }
       this.state.start('Preloader')
     }

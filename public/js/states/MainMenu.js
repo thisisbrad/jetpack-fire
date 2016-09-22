@@ -2,8 +2,6 @@ JetPackFire.MainMenu = function() {}
 
 JetPackFire.MainMenu.prototype = {
 	create: function() {
-		// this.game.time.advancedTiming = true;
-		// this.game.debug.text(this.game.time.fps, 2, 14, "#00ff00");
 		this.background = this.game.add.tileSprite(0, 0, this.game.width, 512, 'background')
 		this.background.autoScroll(-100,0)
 

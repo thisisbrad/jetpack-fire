@@ -74,13 +74,13 @@ angular.module('fireApp').factory("GameSvc", function($rootScope, $firebaseObjec
 
       //create an enemy spawn loop
       this.enemyGenerator = this.game.time.events.loop(
-        Phaser.Timer.SECOND + 200, this.generateEnemy, this
+        Phaser.Timer.SECOND + 450, this.generateEnemy, this
       )
       this.enemyGenerator.timer.start()
 
       // create a coin spawn loop
       this.coinGenerator = this.game.time.events.loop(
-        200, this.generateCoins, this
+        Phaser.Timer.SECOND, this.generateCoins, this
       )
       this.coinGenerator.timer.start()
 
