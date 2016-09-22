@@ -1,7 +1,7 @@
 function PhaserGameConstructor() {
 	this.init = function() {
 		var game = new Phaser.Game(
-			window.innerWidth,window.innerHeight - 54, Phaser.AUTO, 'jetpackFire'
+			window.innerWidth,window.innerHeight - 54, Phaser.CANVAS, 'jetpackFire'
 		)
 
 		game.state.add('Boot', JetPackFire.Boot)
