@@ -4,6 +4,8 @@ angular.module('fireApp').service("PhaserSvc", function(BootSvc, GameSvc) {
 			window.innerWidth,window.innerHeight - 54, Phaser.AUTO, 'jetpackFire'
 		)
 
+		console.log("THIS IS RUNNING")
+
 		game.state.add('Boot', BootSvc)
 		game.state.add('Preloader', JetPackFire.Preload)
 		game.state.add('MainMenu', JetPackFire.MainMenu)
@@ -13,8 +15,4 @@ angular.module('fireApp').service("PhaserSvc", function(BootSvc, GameSvc) {
 
 		return game;
 	}
-	this.log = function() {
-		console.log('WOOOT WOOOOT!!', BootSvc)
-	}
-
 })
