@@ -243,7 +243,7 @@ angular.module('fireApp').factory("GameSvc", function($rootScope, $firebaseObjec
       this.coinSound.play()
       this.collection.score = this.score
       this.collection.$save().then(function(ref) {
-        // console.log('Got a Coin!', this.collection.score)
+        console.log('Got a Coin!')
       }, function(error) {
         console.log("Error:", error);
       });
